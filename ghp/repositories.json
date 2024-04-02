@@ -3,7 +3,7 @@
         "name": "ghp",
         "path": "/Users/rodr15/Documents/proyectos/git-cli/ghp",
         "excluded_files": [
-            
+            "README.md"
         ]
     }
 ]

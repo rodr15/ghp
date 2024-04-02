@@ -82,7 +82,7 @@ def pull_all():
 @app.command()
 def diff(name:str):
     repo: HpRepository = _get_repo(name)
-    typer.echo(repo.diff_short())
+    typer.echo(repo.diff())
 
 @app.command()
 def status(name:str):
