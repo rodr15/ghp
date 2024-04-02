@@ -5,11 +5,17 @@ from .hp_repo import HpRepository
 app = typer.Typer()
 
 def _get_repos() -> set[HpRepository]:
-     response = json.load(open('repositories.json', 'r'))
+     response = json.load(open('ghp/repositories.json', 'r'))
      return set([HpRepository.from_dict(repo) for repo in response])
 
+def _get_repo(name: str) -> HpRepository:
+    repos: set[HpRepository] = _get_repos()
+    for repo in repos:
+        if repo.name == name:
+            return repo
+
 def _save_repos(repos: set[HpRepository]) -> None:
-    with open('repositories.json', 'w') as f:
+    with open('ghp/repositories.json', 'w') as f:
         json.dump(list(repos), f, ensure_ascii=False, indent=4,cls= HpRepository.HpRepositoryEncoder)
 
 
@@ -71,3 +77,14 @@ def pull_all():
     for repo in repos:
         typer.echo(f'Pulling {repo}...')
         repo.repo.pull()
+
+
+@app.command()
+def diff(name:str):
+    repo: HpRepository = _get_repo(name)
+    typer.echo(repo.diff_short())
+
+@app.command()
+def status(name:str):
+    repo: HpRepository = _get_repo(name)
+    typer.echo(repo.status())

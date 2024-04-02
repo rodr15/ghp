@@ -17,14 +17,25 @@ class HpRepository:
         self.excluded_files = excluded_files
         self.repo = Repo(self.path)
     
-    def pull(self):
-        self.repo.git.execute('git pull --rebase --autostash')
+    def pull(self) -> str:
+        return self.repo.git.execute('git pull --rebase --autostash')
 
-    def diff_short(self):
-        self.repo.git.execute('git diff --name-only')
+    def diff_short(self) -> str:
+        diff = ''
+        
+        for d in self.repo.index.diff(None):
+            if d.a_path in self.excluded_files : continue
+            diff += f'{d.a_path}\n'
+        
+        return diff
+
     
-    def diff(self):
-        self.repo.git.execute('git diff')
+    def diff(self) -> str:
+        return self.repo.index.diff(None)
+    
+    def status(self) -> str:
+        return self.repo.git.execute('git status')
+        
     
     def __hash__(self) -> int:
         return hash(self.name)
